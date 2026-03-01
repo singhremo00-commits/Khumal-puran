@@ -95,6 +95,7 @@ const ChapterWheel = ({ current, onSelect }: { current: number, onSelect: (id: n
             style={{ transform: 'translateX(-25%)' }}
           >
             {CHAPTERS.map((ch, idx) => {
+              if (!ch) return null;
               const angle = (idx / CHAPTERS.length) * 360 - 90;
               const radius = 100;
               const x = Math.cos((angle * Math.PI) / 180) * radius;
@@ -274,7 +275,12 @@ export default function App() {
   const audioContextRef = useRef<AudioContext | null>(null);
   const audioSourceRef = useRef<AudioBufferSourceNode | null>(null);
 
-  const currentChapter = CHAPTERS.find(c => c.chapter_id === chapterId) || CHAPTERS[0];
+  const currentChapter = CHAPTERS.find(c => c && c.chapter_id === chapterId) || CHAPTERS[0] || {
+    chapter_id: 1,
+    verse_title: "Loading...",
+    content: { en: "", bn: "", hinglish: "" },
+    metadata: { theme_color: "#D4AF37", font_style: "Serif" }
+  };
 
   const stopAudio = () => {
     if (audioSourceRef.current) {
@@ -425,13 +431,18 @@ export default function App() {
               <button onClick={() => setIsAboutOpen(false)} className="absolute top-4 right-4 text-gold hover:scale-110 transition-transform">
                 <X size={24} />
               </button>
-              <h2 className="text-3xl font-sans font-bold text-gold mb-6">About Khumal Puran</h2>
-              <p className="text-white/80 leading-relaxed font-sans mb-4">
-                Khumal Puran is a sacred text detailing the ancient history and divine lineage of the Khumal clan in the Manipur Valley.
-              </p>
-              <p className="text-white/80 leading-relaxed font-sans">
-                This digital edition aims to preserve and share this rich cultural heritage with the world.
-              </p>
+              <h2 className="text-3xl font-sans font-bold text-gold mb-6">About Khuman Puran</h2>
+              <div className="space-y-4 text-white/80 leading-relaxed font-sans text-sm md:text-base">
+                <p>
+                  Khuman Puran is an important historical and cultural text that tells the story of the ancient Khuman dynasty of Manipur. It reflects the rich traditions, royal history, and cultural heritage of the region.
+                </p>
+                <p>
+                  This app presents a newly simplified and modern digital version of the text, carefully designed and developed by <strong>Remo Singh</strong>. The content has been organized in a clear, easy-to-read format so that readers of all ages can understand and explore this valuable heritage without difficulty.
+                </p>
+                <p className="pt-4 border-t border-gold/20 text-gold/90 italic">
+                  This edition is based on the translated work of Shri Nabadeep Singh (Retired), Former Assistant Headmaster, Chura Chand High School, Imphal, Manipur.
+                </p>
+              </div>
             </motion.div>
           </motion.div>
         )}
@@ -455,12 +466,29 @@ export default function App() {
               <button onClick={() => setIsSupportOpen(false)} className="absolute top-4 right-4 text-gold hover:scale-110 transition-transform">
                 <X size={24} />
               </button>
-              <h2 className="text-3xl font-sans font-bold text-gold mb-6">Support</h2>
-              <p className="text-white/80 leading-relaxed font-sans mb-4">
-                For any queries, feedback, or support regarding this application, please reach out to us.
-              </p>
-              <div className="bg-gold/10 p-4 rounded-xl border border-gold/20">
-                <p className="text-gold font-medium">Email: support@khumalpuran.org</p>
+              <h2 className="text-3xl font-sans font-bold text-gold mb-6">Support & Donation</h2>
+              <div className="space-y-6 text-white/80 leading-relaxed font-sans text-sm md:text-base">
+                <p>
+                  If you find this app helpful, you can support its development through a donation. It is completely optional and at your own discretion.
+                </p>
+                
+                <div className="flex flex-col items-center gap-4 py-4 bg-white/5 rounded-xl border border-gold/10">
+                  <img 
+                    src="https://remosingh.in/wp-content/uploads/2026/02/Picsart_26-03-01_07-46-40-212.png" 
+                    alt="Donation QR Code" 
+                    className="w-48 h-48 rounded-lg shadow-lg"
+                    referrerPolicy="no-referrer"
+                  />
+                  <p className="text-gold text-xs font-medium uppercase tracking-wider">Scan to Support</p>
+                </div>
+
+                <p className="text-white/60 text-xs italic">
+                  Note: The app will remain free for life with all future updates, regardless of donation.
+                </p>
+
+                <div className="pt-4 border-t border-gold/20">
+                  <p className="text-gold font-medium text-sm">Email: support@khumalpuran.org</p>
+                </div>
               </div>
             </motion.div>
           </motion.div>
