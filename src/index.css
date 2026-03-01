@@ -1,0 +1,91 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --color-gold: #D4AF37;
+  --color-obsidian: #000000;
+  --color-paper: #F5F2ED;
+}
+
+@layer base {
+  body {
+    @apply font-sans bg-obsidian text-white;
+  }
+}
+
+.mandala-border {
+  position: absolute;
+  inset: 12px;
+  border: 1px solid var(--color-gold);
+  pointer-events: none;
+  z-index: 50;
+}
+
+.mandala-corner {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border: 2px solid var(--color-gold);
+  border-radius: 50%;
+}
+
+@keyframes rotate-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-rotate-slow {
+  animation: rotate-slow 20s linear infinite;
+}
+
+/* Paper texture effect - Forced to dark */
+.bg-paper-texture {
+  background-color: #000000;
+  background-image: url("https://www.transparenttextures.com/patterns/dark-matter.png");
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(212, 175, 55, 0.05);
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(212, 175, 55, 0.3);
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(212, 175, 55, 0.5);
+}
+
+.markdown-body {
+  @apply space-y-8;
+}
+
+.markdown-body h3 {
+  @apply text-xl md:text-2xl font-sans font-bold text-gold mt-12 mb-6;
+}
+
+.markdown-body p {
+  @apply mb-6;
+}
+
+.markdown-body ul {
+  @apply list-disc list-inside space-y-4 ml-4 mb-8 text-left;
+}
+
+.markdown-body li {
+  @apply text-white/90;
+}
+
+.markdown-body strong {
+  @apply text-gold font-bold;
+}
+
+.markdown-body em {
+  @apply text-gold/80 italic;
+}
