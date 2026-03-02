@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import Markdown from 'react-markdown';
-import { Globe, Book, Volume2, Moon, Sun, ChevronLeft, ChevronRight, Search, Copy, Bookmark, BookmarkCheck, X, Loader2, Menu, HelpCircle } from 'lucide-react';
+import { Globe, Book, Moon, Sun, ChevronLeft, ChevronRight, Search, Copy, Bookmark, BookmarkCheck, X, Loader2, Menu, HelpCircle } from 'lucide-react';
 import { cn, Language, CHAPTERS, PuranContent, FAQ_DATA, FAQItem } from './types';
-import { GoogleGenAI, Modality } from "@google/genai";
 
 const MandalaBorder = () => (
   <div className="fixed inset-0 pointer-events-none z-50 p-4">
@@ -265,15 +264,11 @@ const HamburgerMenu = ({ onOpenFAQ, onOpenAbout, onOpenSupport }: { onOpenFAQ: (
 export default function App() {
   const [lang, setLang] = useState<Language>('english');
   const [chapterId, setChapterId] = useState(1);
-  const [isAudioPlaying, setIsAudioPlaying] = useState(false);
-  const [isAudioLoading, setIsAudioLoading] = useState(false);
   const [bookmarks, setBookmarks] = useState<number[]>([]);
   const [showCopyToast, setShowCopyToast] = useState(false);
   const [isFAQOpen, setIsFAQOpen] = useState(false);
   const [isAboutOpen, setIsAboutOpen] = useState(false);
   const [isSupportOpen, setIsSupportOpen] = useState(false);
-  const audioContextRef = useRef<AudioContext | null>(null);
-  const audioSourceRef = useRef<AudioBufferSourceNode | null>(null);
 
   const currentChapter = CHAPTERS.find(c => c && c.chapter_id === chapterId) || CHAPTERS[0] || {
     chapter_id: 1,
@@ -281,100 +276,6 @@ export default function App() {
     content: { en: "", bn: "", hinglish: "" },
     metadata: { theme_color: "#D4AF37", font_style: "Serif" }
   };
-
-  const stopAudio = () => {
-    if (audioSourceRef.current) {
-      try {
-        audioSourceRef.current.stop();
-      } catch (e) {
-        // Ignore errors if already stopped
-      }
-      audioSourceRef.current = null;
-    }
-    if (audioContextRef.current && audioContextRef.current.state !== 'closed') {
-      audioContextRef.current.close();
-      audioContextRef.current = null;
-    }
-    setIsAudioPlaying(false);
-  };
-
-  const handleSpeak = async () => {
-    if (isAudioPlaying) {
-      stopAudio();
-      return;
-    }
-
-    try {
-      setIsAudioLoading(true);
-      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-      const model = "gemini-2.5-flash-preview-tts";
-      
-      const textToSpeak = currentChapter.content[lang];
-      const prompt = lang === 'bangla' 
-        ? `Read this Bengali text clearly and naturally: ${textToSpeak}`
-        : lang === 'hinglish'
-        ? `Read this Hinglish text clearly and naturally: ${textToSpeak}`
-        : `Read this English text clearly and naturally: ${textToSpeak}`;
-
-      const response = await ai.models.generateContent({
-        model,
-        contents: [{ parts: [{ text: prompt }] }],
-        config: {
-          responseModalities: [Modality.AUDIO],
-          speechConfig: {
-            voiceConfig: {
-              prebuiltVoiceConfig: { voiceName: 'Kore' },
-            },
-          },
-        },
-      });
-
-      const base64Audio = response.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
-      if (base64Audio) {
-        const binaryString = atob(base64Audio);
-        const len = binaryString.length;
-        const bytes = new Uint8Array(len);
-        for (let i = 0; i < len; i++) {
-          bytes[i] = binaryString.charCodeAt(i);
-        }
-        
-        const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)({
-          sampleRate: 24000
-        });
-        audioContextRef.current = audioContext;
-
-        // The data is raw PCM 16-bit Little Endian
-        const pcmData = new Int16Array(bytes.buffer);
-        const audioBuffer = audioContext.createBuffer(1, pcmData.length, 24000);
-        const channelData = audioBuffer.getChannelData(0);
-        
-        for (let i = 0; i < pcmData.length; i++) {
-          channelData[i] = pcmData[i] / 32768.0;
-        }
-
-        const source = audioContext.createBufferSource();
-        source.buffer = audioBuffer;
-        source.connect(audioContext.destination);
-        audioSourceRef.current = source;
-        
-        source.onended = () => {
-          setIsAudioPlaying(false);
-        };
-
-        source.start(0);
-        setIsAudioPlaying(true);
-      }
-    } catch (error) {
-      console.error("TTS Error:", error);
-      alert("Failed to generate audio. Please check your connection and try again.");
-    } finally {
-      setIsAudioLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    stopAudio();
-  }, [chapterId, lang]);
 
   useEffect(() => {
     document.documentElement.classList.add('dark');
@@ -569,21 +470,6 @@ export default function App() {
         <div className="max-w-md mx-auto flex items-center justify-between bg-white/5 backdrop-blur-xl border border-gold/20 rounded-full px-4 py-2 shadow-[0_8px_32px_rgba(0,0,0,0.4)]">
           <div className="flex items-center gap-3">
             <ChapterWheel current={chapterId} onSelect={setChapterId} />
-            <button
-              onClick={handleSpeak}
-              disabled={isAudioLoading}
-              className={cn(
-                "w-9 h-9 rounded-full flex items-center justify-center transition-all",
-                isAudioPlaying ? "bg-gold text-white shadow-[0_0_15px_rgba(212,175,55,0.4)]" : "text-gold hover:bg-gold/10",
-                isAudioLoading ? "opacity-50 cursor-not-allowed" : ""
-              )}
-            >
-              {isAudioLoading ? (
-                <Loader2 size={18} className="animate-spin" />
-              ) : (
-                <Volume2 size={18} />
-              )}
-            </button>
           </div>
 
           <div className="flex items-center gap-4">
