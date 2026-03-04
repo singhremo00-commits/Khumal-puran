@@ -21,46 +21,6 @@ export interface PuranContent {
   };
 }
 
-export interface FAQItem {
-  question: string;
-  answer: string;
-}
-
-export const FAQ_DATA: FAQItem[] = [
-  {
-    question: "What is Khumal Puran and who is its author?",
-    answer: "Khumal Puran is an ancient and miraculous history of the Khumal clan (vansh) from the Manipur valley. Its original author is Shri Nabakhendra (also referred to as Pandit Nabakhendra or Navakhendra Sharma/Singh), a Meitei scholar in the court of the Manipur king. The author claims that the entire story was narrated to him directly by Mahadev (Lord Shiva) during a state of deep meditation."
-  },
-  {
-    question: "How did the Khumal dynasty originate?",
-    answer: "The roots of this dynasty connect to Arjuna from the Mahabharata. Arjuna's son was Babruvahana (Vabru Vahana), who ruled Manipur. Babruvahana's son was Dattamani, who ascended the throne of Manipur. Dattamani's son, Atia Guru (also called Likla Khomba), further expanded the dynasty."
-  },
-  {
-    question: "What is 'Yaibung' and what is its significance?",
-    answer: "Yaibung is a small magical drum given to Atia Guru by a crow (which was Lord Vishnu himself in disguise). This drum was like a priceless gem; whenever asked, it could fulfill desires instantly, such as producing a house or grass. According to Khumal Atal, as long as this drum remained with the Khumal kings, no one could defeat them."
-  },
-  {
-    question: "Who was Pakhangba and how did he get this name?",
-    answer: "Pakhangba was the youngest son of Atia Guru and Sabirei Panthaibi; his original name was Konthok Konsil. When Atia Guru asked his sons to circle the world seven times, Konthok simply circled his father's bed seven times, saying his father was the entire world. Impressed, his father named him 'Pakhangba' (one who knows his father) and made him the king."
-  },
-  {
-    question: "Who are Khumal Guru and Nongpok Leima Panthaibi?",
-    answer: "According to legend, Lord Mahadev (Shiva) incarnated as the son of Pakhangba and was called Khumal Guru. Goddess Durga incarnated as the daughter of Indra and was known as Nongpok Leima Panthaibi. Their marriage gave rise to the Laisram dynasty."
-  },
-  {
-    question: "How did the downfall of the Khumal dynasty occur?",
-    answer: "After Pakhangba's disappearance, power declined. Khumal Atal conspired with the Meitei king and deceitfully stole the magical drum (Yaibung). Finally, silk-cotton (semal) tree logs were cut and thrown into the river; the Khumal army drank the water, lost their mental balance, and were destroyed in internal conflict."
-  },
-  {
-    question: "How did the division between Meitei and Bishnupriya communities happen?",
-    answer: "During King Garib Niwaj's reign, saint Santadas Gosai initiated people into a new faith (Ramauti sect). The Khumal king stuck with the old Vishnu cult and were called Bishnupriya (devotees of Vishnu). Those who took initiation by bathing in the Nongkhrang tank became known as Meitei."
-  },
-  {
-    question: "What benefits are mentioned for reading or keeping Khumal Puran at home?",
-    answer: "According to the Puran, anyone who keeps it in their home and reads or listens to it with devotion on Fridays and Sundays will not suffer from incurable diseases. It fills the home with wealth, prosperity, and abundance."
-  }
-];
-
 export const CHAPTERS: PuranContent[] = [
   {
     chapter_id: 1,

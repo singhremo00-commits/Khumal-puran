@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import Markdown from 'react-markdown';
-import { Globe, Book, Moon, Sun, ChevronLeft, ChevronRight, Search, Copy, Bookmark, BookmarkCheck, X, Loader2, Menu, HelpCircle } from 'lucide-react';
-import { cn, Language, CHAPTERS, PuranContent, FAQ_DATA, FAQItem } from './types';
+import { Globe, Book, ChevronLeft, ChevronRight, Copy, Bookmark, BookmarkCheck } from 'lucide-react';
+import { cn, Language, CHAPTERS, PuranContent } from './types';
 
 const MandalaBorder = () => (
   <div className="fixed inset-0 pointer-events-none z-50 p-4">
@@ -136,139 +136,11 @@ const ChapterWheel = ({ current, onSelect }: { current: number, onSelect: (id: n
   );
 };
 
-const FAQModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) => {
-  return (
-    <AnimatePresence>
-      {isOpen && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md"
-        >
-          <motion.div
-            initial={{ scale: 0.9, y: 20 }}
-            animate={{ scale: 1, y: 0 }}
-            exit={{ scale: 0.9, y: 20 }}
-            className="bg-obsidian border border-gold/30 rounded-2xl w-full max-w-2xl max-h-[80vh] overflow-hidden flex flex-col shadow-2xl"
-          >
-            <div className="p-6 border-bottom border-gold/20 flex items-center justify-between bg-gold/5">
-              <div className="flex items-center gap-3">
-                <HelpCircle className="text-gold" size={24} />
-                <h2 className="text-2xl font-sans font-bold text-white">Detailed FAQ</h2>
-              </div>
-              <button
-                onClick={onClose}
-                className="p-2 hover:bg-gold/10 rounded-full text-gold transition-colors"
-              >
-                <X size={24} />
-              </button>
-            </div>
-
-            <div className="flex-1 overflow-y-auto p-6 space-y-8 custom-scrollbar">
-              {FAQ_DATA.map((item, idx) => (
-                <div key={idx} className="space-y-3 group">
-                  <h3 className="text-lg font-sans text-gold font-bold leading-tight group-hover:text-white transition-colors">
-                    {item.question}
-                  </h3>
-                  <p className="text-white/70 leading-relaxed font-sans text-sm md:text-base">
-                    {item.answer}
-                  </p>
-                  <div className="h-px w-full bg-gold/10" />
-                </div>
-              ))}
-            </div>
-
-            <div className="p-4 bg-gold/5 text-center text-xs text-gold/50 uppercase tracking-widest font-sans">
-              Khumal Puran Digital Edition
-            </div>
-          </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
-  );
-};
-
-const HamburgerMenu = ({ onOpenFAQ, onOpenAbout, onOpenSupport }: { onOpenFAQ: () => void, onOpenAbout: () => void, onOpenSupport: () => void }) => {
-  const [isOpen, setIsOpen] = useState(false);
-
-  return (
-    <div className="fixed top-6 right-6 z-[60]">
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="w-12 h-12 bg-obsidian/80 backdrop-blur-md rounded-full border border-gold/30 flex items-center justify-center text-gold shadow-lg hover:scale-110 transition-transform"
-      >
-        <Menu size={24} />
-      </button>
-
-      <AnimatePresence>
-        {isOpen && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsOpen(false)}
-              className="fixed inset-0 bg-black/20 backdrop-blur-sm z-[-1]"
-            />
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8, x: 20, y: -20 }}
-              animate={{ opacity: 1, scale: 1, x: 0, y: 0 }}
-              exit={{ opacity: 0, scale: 0.8, x: 20, y: -20 }}
-              className="absolute top-14 right-0 bg-obsidian border border-gold/30 rounded-2xl shadow-2xl overflow-hidden min-w-[200px]"
-            >
-              <button
-                onClick={() => {
-                  onOpenFAQ();
-                  setIsOpen(false);
-                }}
-                className="w-full px-6 py-4 text-left flex items-center gap-3 text-white hover:bg-gold/10 transition-colors"
-              >
-                <HelpCircle size={20} className="text-gold" />
-                <span className="font-sans">Detailed FAQ</span>
-              </button>
-              <div className="h-px bg-gold/10 mx-4" />
-              <button
-                onClick={() => {
-                  onOpenAbout();
-                  setIsOpen(false);
-                }}
-                className="w-full px-6 py-4 text-left flex items-center gap-3 text-white hover:bg-gold/10 transition-colors"
-              >
-                <Book size={20} className="text-gold" />
-                <span className="font-sans">About</span>
-              </button>
-              <div className="h-px bg-gold/10 mx-4" />
-              <button
-                onClick={() => {
-                  onOpenSupport();
-                  setIsOpen(false);
-                }}
-                className="w-full px-6 py-4 text-left flex items-center gap-3 text-white hover:bg-gold/10 transition-colors"
-              >
-                <Globe size={20} className="text-gold" />
-                <span className="font-sans">Support</span>
-              </button>
-              <div className="h-px bg-gold/10 mx-4" />
-              <div className="px-6 py-4 text-[10px] text-gold/40 uppercase tracking-widest font-sans">
-                Khumal Puran v1.0
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
-    </div>
-  );
-};
-
 export default function App() {
   const [lang, setLang] = useState<Language>('english');
   const [chapterId, setChapterId] = useState(1);
   const [bookmarks, setBookmarks] = useState<number[]>([]);
   const [showCopyToast, setShowCopyToast] = useState(false);
-  const [isFAQOpen, setIsFAQOpen] = useState(false);
-  const [isAboutOpen, setIsAboutOpen] = useState(false);
-  const [isSupportOpen, setIsSupportOpen] = useState(false);
 
   const currentChapter = CHAPTERS.find(c => c && c.chapter_id === chapterId) || CHAPTERS[0] || {
     chapter_id: 1,
@@ -307,94 +179,6 @@ export default function App() {
   return (
     <div className="min-h-screen w-full flex flex-col items-center justify-center p-8 transition-colors duration-700 bg-paper-texture dark">
       <MandalaBorder />
-      <HamburgerMenu 
-        onOpenFAQ={() => setIsFAQOpen(true)} 
-        onOpenAbout={() => setIsAboutOpen(true)}
-        onOpenSupport={() => setIsSupportOpen(true)}
-      />
-      <FAQModal isOpen={isFAQOpen} onClose={() => setIsFAQOpen(false)} />
-      
-      {/* About Modal */}
-      <AnimatePresence>
-        {isAboutOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md"
-          >
-            <motion.div
-              initial={{ scale: 0.9, y: 20 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.9, y: 20 }}
-              className="bg-obsidian border border-gold/30 rounded-2xl w-full max-w-lg p-8 shadow-2xl relative"
-            >
-              <button onClick={() => setIsAboutOpen(false)} className="absolute top-4 right-4 text-gold hover:scale-110 transition-transform">
-                <X size={24} />
-              </button>
-              <h2 className="text-3xl font-sans font-bold text-gold mb-6">About Khuman Puran</h2>
-              <div className="space-y-4 text-white/80 leading-relaxed font-sans text-sm md:text-base">
-                <p>
-                  Khuman Puran is an important historical and cultural text that tells the story of the ancient Khuman dynasty of Manipur. It reflects the rich traditions, royal history, and cultural heritage of the region.
-                </p>
-                <p>
-                  This app presents a newly simplified and modern digital version of the text, carefully designed and developed by <strong>Remo Singh</strong>. The content has been organized in a clear, easy-to-read format so that readers of all ages can understand and explore this valuable heritage without difficulty.
-                </p>
-                <p className="pt-4 border-t border-gold/20 text-gold/90 italic">
-                  This edition is based on the translated work of Shri Nabadeep Singh (Retired), Former Assistant Headmaster, Chura Chand High School, Imphal, Manipur.
-                </p>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Support Modal */}
-      <AnimatePresence>
-        {isSupportOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md"
-          >
-            <motion.div
-              initial={{ scale: 0.9, y: 20 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.9, y: 20 }}
-              className="bg-obsidian border border-gold/30 rounded-2xl w-full max-w-lg p-8 shadow-2xl relative"
-            >
-              <button onClick={() => setIsSupportOpen(false)} className="absolute top-4 right-4 text-gold hover:scale-110 transition-transform">
-                <X size={24} />
-              </button>
-              <h2 className="text-3xl font-sans font-bold text-gold mb-6">Support & Donation</h2>
-              <div className="space-y-6 text-white/80 leading-relaxed font-sans text-sm md:text-base">
-                <p>
-                  If you find this app helpful, you can support its development through a donation. It is completely optional and at your own discretion.
-                </p>
-                
-                <div className="flex flex-col items-center gap-4 py-4 bg-white/5 rounded-xl border border-gold/10">
-                  <img 
-                    src="https://remosingh.in/wp-content/uploads/2026/02/Picsart_26-03-01_07-46-40-212.png" 
-                    alt="Donation QR Code" 
-                    className="w-48 h-48 rounded-lg shadow-lg"
-                    referrerPolicy="no-referrer"
-                  />
-                  <p className="text-gold text-xs font-medium uppercase tracking-wider">Scan to Support</p>
-                </div>
-
-                <p className="text-white/60 text-xs italic">
-                  Note: The app will remain free for life with all future updates, regardless of donation.
-                </p>
-
-                <div className="pt-4 border-t border-gold/20">
-                  <p className="text-gold font-medium text-sm">Email: support@khumalpuran.org</p>
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
       
       <main className="max-w-5xl w-full relative z-10 text-center pb-40 px-4 md:px-8">
         <AnimatePresence mode="wait">
